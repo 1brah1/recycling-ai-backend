@@ -40,7 +40,7 @@ async def predict_endpoint(request: Request):
         return {"status": "error", "message": str(e)}
 
 
-@app.post("/api/predict")
+@app.post("/api/name")
 async def predict_endpoint(request: Request):
     try:
         # This line catches the JSON {"amplitude": 800, "status": "voice_detected"}
@@ -57,7 +57,7 @@ async def predict_endpoint(request: Request):
         print(f"Crash error: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-@app.post("/api/predict")
+@app.post("/api/classify")
 async def classify_waste(file: UploadFile = File(...)):
     try:
         # Check for API Key
