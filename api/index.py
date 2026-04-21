@@ -1,7 +1,7 @@
 import os
 import base64
 import requests
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -37,6 +37,24 @@ async def predict_endpoint(request: Request):
         }
     except Exception as e:
         print(f"Error: {e}")
+        return {"status": "error", "message": str(e)}
+
+
+@app.post("/api/predict")
+async def predict_endpoint(request: Request):
+    try:
+        # This line catches the JSON {"amplitude": 800, "status": "voice_detected"}
+        data = await request.json() 
+        print(f"Data received: {data}")
+        
+        return {
+            "status": "success",
+            "message": "STM32 Data Received",
+            "captured_amplitude": data.get("amplitude")
+        }
+    except Exception as e:
+        # This logs the error to the Vercel console so you can see why it crashed
+        print(f"Crash error: {str(e)}")
         return {"status": "error", "message": str(e)}
 
 @app.post("/api/predict")
