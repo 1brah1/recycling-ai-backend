@@ -16,10 +16,14 @@ app.add_middleware(
 
 # Root route for quick health check
 @app.get("/")
+
 async def root():
     return {"status": "success", "message": "Recycling AI Backend is Online"}
 
 @app.post("/api/predict")
+async def debug_endpoint(payload: dict):
+    print(f"Received data from STM32: {payload}") # This shows up in Vercel Logs
+    return {"status": "received", "data": payload}
 async def classify_waste(file: UploadFile = File(...)):
     try:
         # Check for API Key
