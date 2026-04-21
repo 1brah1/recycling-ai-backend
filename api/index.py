@@ -21,9 +21,25 @@ async def root():
     return {"status": "success", "message": "Recycling AI Backend is Online"}
 
 @app.post("/api/predict")
-async def debug_endpoint(payload: dict):
-    print(f"Received data from STM32: {payload}") # This shows up in Vercel Logs
-    return {"status": "received", "data": payload}
+async def predict_endpoint(request: Request):
+    try:
+        # 1. Capture the JSON data from STM32
+        payload = await request.json()
+        
+        # 2. Log it so you can see it in Vercel "Logs" tab
+        print(f"!!! RECEIVED FROM STM32: {payload}")
+        
+        # 3. Return a response so the ESP-01S knows it worked
+        return {
+            "status": "success", 
+            "message": "Data received",
+            "received_amplitude": payload.get("amplitude")
+        }
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"status": "error", "message": str(e)}
+
+@app.post("/api/predict")
 async def classify_waste(file: UploadFile = File(...)):
     try:
         # Check for API Key
