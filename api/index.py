@@ -19,7 +19,7 @@ app.add_middleware(
 async def root():
     return {"status": "success", "message": "Recycling AI Backend is Online"}
 
-@app.post("/api/classify")
+@app.post("/api/predict")
 async def classify_waste(file: UploadFile = File(...)):
     try:
         # Check for API Key
