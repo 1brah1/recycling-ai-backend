@@ -22,33 +22,29 @@ async def root():
 @app.post("/api/predict")
 async def predict_endpoint(request: Request):
     try:
-        # 1. Capture RAW BYTES from STM32 (Essential for audio)
         audio_bytes = await request.body()
-        
-        # 2. Log details for debugging
         byte_count = len(audio_bytes)
-        print(f"!!! RECEIVED FROM STM32: {byte_count} bytes")
+        
+        print(f"✅ RECEIVED {byte_count} bytes from STM32")
 
         if byte_count == 0:
-            return {"status": "error", "message": "Empty body received"}
+            return {"status": "error", "message": "Empty audio"}
 
-        # 3. Optional: Save as a .wav file to check quality
-        # 16000Hz, 8-bit Mono (Matches STM32 settings)
+        # Save as WAV for debugging
         with wave.open("latest_record.wav", "wb") as wav_file:
             wav_file.setnchannels(1)
-            wav_file.setsampwidth(1) # 1 byte for 8-bit
+            wav_file.setsampwidth(1)      # 8-bit
             wav_file.setframerate(16000)
             wav_file.writeframes(audio_bytes)
 
-        # 4. Return success to STM32
         return {
             "status": "success",
             "message": f"Received {byte_count} bytes",
-            "filename": "latest_record.wav"
+            "bytes_received": byte_count
         }
-        
+
     except Exception as e:
-        print(f"Crash error: {str(e)}")
+        print(f"Error: {str(e)}")
         return {"status": "error", "message": str(e)}
 
 @app.post("/api/classify")
